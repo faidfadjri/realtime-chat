@@ -3,8 +3,7 @@
 A modern, real-time chat application built to demonstrate proficiency in full-stack web development. This project utilizes a **Ruby on Rails** backend with **ActionCable** for WebSockets, coupled with a highly responsive, modern **React** frontend leveraging **Inertia.js** and **Vite**.
 
 ## 🌟 Live Demo
-**[Click here to view the live application!](#)**
-*(Note: Be sure to update this hyperlink with your live domain once hosted!)*
+**[Click here to view the live application!](https://faidfadjri.space)**
 
 ## ✨ Features
 - **Real-Time Messaging**: Lightning-fast message delivery using ActionCable WebSockets. Completely eliminates page refreshes.
