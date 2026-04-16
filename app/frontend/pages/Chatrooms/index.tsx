@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createConsumer, Subscription } from '@rails/actioncable';
 import './Chatroom.css';
+import { message } from '@/types/message';
 
 // Initialize the ActionCable consumer
 const consumer = createConsumer();
@@ -8,8 +9,9 @@ const consumer = createConsumer();
 const ChatroomIndex = () => {
   const [isJoined, setIsJoined] = useState(false);
   const [roomName, setRoomName] = useState("");
-  const [messages, setMessages] = useState<{ id: number, content: string }[]>([]);
+  const [messages, setMessages] = useState<message[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const clientId = useRef(Date.now().toString() + Math.random().toString()).current;
   const channelRef = useRef<Subscription | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,8 +32,8 @@ const ChatroomIndex = () => {
     const channel = consumer.subscriptions.create(
       { channel: "ChatroomChannel", room: roomName.trim() },
       {
-        received(data: { content: string }) {
-          setMessages((prev) => [...prev, { id: Date.now() + Math.random(), content: data.content }]);
+        received(data: { content: string, senderId?: string }) {
+          setMessages((prev) => [...prev, { id: Date.now().toString() + Math.random(), content: data.content, senderId: data.senderId }]);
         }
       }
     );
@@ -45,7 +47,7 @@ const ChatroomIndex = () => {
     if (currentMessage.trim() === "" || !channelRef.current) return;
 
     // Send the message backward to Rails ActionCable receive(data)
-    channelRef.current.send({ content: currentMessage });
+    channelRef.current.send({ content: currentMessage, senderId: clientId });
     setCurrentMessage("");
   };
 
@@ -98,13 +100,16 @@ const ChatroomIndex = () => {
                    No messages yet. Send one below!
                  </div>
               ) : (
-                messages.map((msg) => (
-                  <div key={msg.id} className="message-wrapper">
-                    <div className="message-bubble">
-                      <p>{msg.content}</p>
+                messages.map((msg) => {
+                  const isMine = msg.senderId === clientId;
+                  return (
+                    <div key={msg.id} className={`message-wrapper ${isMine ? 'message-mine' : 'message-other'}`}>
+                      <div className="message-bubble">
+                        <p>{msg.content}</p>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
               <div ref={messagesEndRef} />
             </div>
