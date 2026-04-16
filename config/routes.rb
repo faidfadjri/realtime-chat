@@ -20,4 +20,8 @@ Rails.application.routes.draw do
   # My Roots
   root "chatrooms#index"
   get "chatrooms", to: "chatrooms#index"
+
+
+  # Action Cable for Websocket
+  mount ActionCable.server => "/cable"
 end
