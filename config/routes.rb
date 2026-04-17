@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   # My Roots
   root "chatrooms#index"
   get "chatrooms", to: "chatrooms#index"
+  delete "chatrooms/:id", to: "chatrooms#destroy", as: "chatroom"
 
   # Auth Routes
   get "login", to: "auth#login"

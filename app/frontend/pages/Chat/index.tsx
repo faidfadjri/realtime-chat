@@ -3,11 +3,13 @@ import { createConsumer, Subscription } from "@rails/actioncable";
 import "./Chat.css";
 import { message } from "@/types/message.type";
 import { ChannelForm, ChatRoom } from "@/components";
+import { Channel } from "@/components";
+import { router } from "@inertiajs/react";
 
 // Initialize the ActionCable consumer
 const consumer = createConsumer();
 
-const ChatIndex = () => {
+const ChatIndex = ({ channels }: { channels: Channel[] }) => {
   const [isJoined, setIsJoined] = useState(false);
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState<message[]>([]);
@@ -30,15 +32,19 @@ const ChatIndex = () => {
     const channel = consumer.subscriptions.create(
       { channel: "ChatroomChannel", room: roomName.trim() },
       {
-        received(data: { content: string; senderId?: string }) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now().toString() + Math.random(),
-              content: data.content,
-              senderId: data.senderId,
-            },
-          ]);
+        received(data: any) {
+          if (data.type === "history") {
+            setMessages(data.messages);
+          } else {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: data.id || Date.now().toString() + Math.random(),
+                content: data.content,
+                senderId: data.senderId,
+              },
+            ]);
+          }
         },
       },
     );
@@ -67,6 +73,8 @@ const ChatIndex = () => {
 
   return (
     <div className="chat-app-container">
+
+      <button className="back-button" onClick={() => router.get("/")}>Back to Home</button>
       <div className="chat-glass-panel">
         <div className="chat-header">
           <h1>
@@ -88,6 +96,7 @@ const ChatIndex = () => {
             roomName={roomName}
             setRoomName={setRoomName}
             handleJoin={handleJoin}
+            channels={channels}
           />
         ) : (
           <ChatRoom

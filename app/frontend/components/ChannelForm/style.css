@@ -1,0 +1,36 @@
+.channel-list {
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.channel {
+  display: flex;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+  gap: 8px;
+  z-index: 10;
+  background-color: rgb(87, 87, 255);
+  border-radius: 100px;
+}
+
+.channel .channel-button {
+  cursor: pointer;
+}
+
+.channel .delete-button {
+  background-color: #1c155a;
+  color: white;
+  border: none;
+  padding: 2px;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_030906) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_17_033446) do
+  create_table "channels", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "slug"
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_channels_on_slug", unique: true
+  end
+
   create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "channel_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
+    t.string "sender_name"
     t.datetime "updated_at", null: false
+    t.index ["channel_id"], name: "index_messages_on_channel_id"
   end
+
+  add_foreign_key "messages", "channels"
 end
