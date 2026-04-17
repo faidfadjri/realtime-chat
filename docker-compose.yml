@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-bismillah}
+      MYSQL_DATABASE: ${CHATROOM_DATABASE:-chatroom_production}
+      MYSQL_USER: ${CHATROOM_DATABASE_USERNAME:-chatroom}
+      MYSQL_PASSWORD: ${CHATROOM_DATABASE_PASSWORD:-bismillah}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  web:
+    build: .
+    image: chatroom:latest
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/1
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  db_data:
+  redis_data:
