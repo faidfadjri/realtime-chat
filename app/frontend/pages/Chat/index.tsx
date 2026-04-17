@@ -4,7 +4,6 @@ import "./Chat.css";
 import { message } from "@/types/message.type";
 import { ChannelForm, ChatRoom } from "@/components";
 import { Channel } from "@/components";
-import { router } from "@inertiajs/react";
 
 // Initialize the ActionCable consumer
 const consumer = createConsumer();
@@ -14,9 +13,9 @@ const ChatIndex = ({ channels }: { channels: Channel[] }) => {
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState<message[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
-  const clientId = useRef(
-    Date.now().toString() + Math.random().toString(),
-  ).current;
+  const [userName, setUserName] = useState<string>(() => {
+    return sessionStorage.getItem("chat_username") || "";
+  });
   const channelRef = useRef<Subscription | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +25,9 @@ const ChatIndex = ({ channels }: { channels: Channel[] }) => {
 
   const handleJoin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (channelRef.current || !roomName.trim()) return;
+    if (channelRef.current || !roomName.trim() || !userName.trim()) return;
+
+    sessionStorage.setItem("chat_username", userName.trim());
 
     // Connect to Rails ChatroomChannel using the dynamic 'room' param
     const channel = consumer.subscriptions.create(
@@ -58,7 +59,7 @@ const ChatIndex = ({ channels }: { channels: Channel[] }) => {
     if (currentMessage.trim() === "" || !channelRef.current) return;
 
     // Send the message backward to Rails ActionCable receive(data)
-    channelRef.current.send({ content: currentMessage, senderId: clientId });
+    channelRef.current.send({ content: currentMessage, senderId: userName.trim() });
     setCurrentMessage("");
   };
 
@@ -73,8 +74,6 @@ const ChatIndex = ({ channels }: { channels: Channel[] }) => {
 
   return (
     <div className="chat-app-container">
-
-      <button className="back-button" onClick={() => router.get("/")}>Back to Home</button>
       <div className="chat-glass-panel">
         <div className="chat-header">
           <h1>
@@ -95,13 +94,15 @@ const ChatIndex = ({ channels }: { channels: Channel[] }) => {
           <ChannelForm
             roomName={roomName}
             setRoomName={setRoomName}
+            userName={userName}
+            setUserName={setUserName}
             handleJoin={handleJoin}
             channels={channels}
           />
         ) : (
           <ChatRoom
             messages={messages}
-            clientId={clientId}
+            clientId={userName.trim()}
             currentMessage={currentMessage}
             setCurrentMessage={setCurrentMessage}
             handleSendMessage={handleSendMessage}

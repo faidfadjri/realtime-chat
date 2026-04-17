@@ -3,9 +3,9 @@
 one:
   channel: one
   content: MyText
-  sender_name: MyString
+  sender_name: Alice
 
 two:
   channel: two
   content: MyText
-  sender_name: MyString
+  sender_name: Bob

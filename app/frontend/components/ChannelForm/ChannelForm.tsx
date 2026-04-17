@@ -6,6 +6,8 @@ import "./style.css";
 export const ChannelForm = ({
   roomName,
   setRoomName,
+  userName,
+  setUserName,
   handleJoin,
   channels
 }: ChannelFormProps) => {
@@ -71,24 +73,33 @@ export const ChannelForm = ({
 
       <form
         onSubmit={handleJoin}
-        style={{ display: "flex", gap: "8px", zIndex: 10 }}
+        style={{ display: "flex", flexDirection: "column", gap: "12px", zIndex: 10, marginTop: "16px" }}
       >
         <input
           type="text"
           className="message-input"
-          placeholder="Channel Name..."
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-          autoFocus
-          style={{ minWidth: "250px" }}
+          placeholder="Your Username..."
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          style={{ width: "100%" }}
         />
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={!roomName.trim()}
-        >
-          Join Channel
-        </button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <input
+            type="text"
+            className="message-input"
+            placeholder="Channel Name..."
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            style={{ flex: 1, minWidth: "250px" }}
+          />
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={!roomName.trim() || !userName.trim()}
+          >
+            Join Channel
+          </button>
+        </div>
       </form>
 
       <ConfirmationDialog

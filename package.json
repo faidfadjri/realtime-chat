@@ -2,10 +2,14 @@
   "private": true,
   "type": "module",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/rails__actioncable": "^8.0.3",
+    "jsdom": "^29.0.2",
     "prettier": "^3.8.3",
     "vite": "^8.0.8",
-    "vite-plugin-ruby": "^5.2.0"
+    "vite-plugin-ruby": "^5.2.0",
+    "vitest": "^4.1.4"
   },
   "dependencies": {
     "@inertiajs/react": "^3.0.3",
@@ -24,6 +28,7 @@
   },
   "scripts": {
     "check": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
-    "format": "prettier --write \"app/frontend/**/*.{ts,tsx,css}\""
+    "format": "prettier --write \"app/frontend/**/*.{ts,tsx,css}\"",
+    "test": "vitest run"
   }
 }
