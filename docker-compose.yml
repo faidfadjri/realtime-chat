@@ -2,11 +2,12 @@ services:
   db:
     image: mysql:8.0
     restart: on-failure
+    command: --performance_schema=OFF --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-bismillah}
-      MYSQL_DATABASE: ${CHATROOM_DATABASE:-chatroom_production}
-      MYSQL_USER: ${CHATROOM_DATABASE_USERNAME:-chatroom}
-      MYSQL_PASSWORD: ${CHATROOM_DATABASE_PASSWORD:-bismillah}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${CHATROOM_DATABASE}
+      # JANGAN ada MYSQL_USER: root di sini!
+      # Hapus atau ganti ke user lain kalau mau, tapi mending hapus dulu.
     ports:
       - "3307:3306"
     volumes:
