@@ -142,7 +142,7 @@ jobs:
           script: |
             set -e
 
-            APP_DIR="/chatroom"
+            APP_DIR="~/chatroom"
 
             if [ ! -d "$APP_DIR" ]; then
               git clone https://github.com/faidfadjri/realtime-chat.git $APP_DIR
