@@ -94,6 +94,7 @@ jobs:
       CHATROOM_DATABASE_PASSWORD: root
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
     steps:
       - uses: actions/checkout@v4
