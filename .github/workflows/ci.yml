@@ -108,22 +108,13 @@ jobs:
             git fetch origin master
             git reset --hard origin/master
 
-            echo "${{ secrets.ENV_FILE }}" > .env
+            echo "${{ secrets.ENV }}" > .env
             echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
             chmod 600 config/master.key
 
-            # 1. Build dulu tanpa jalanin container (biar fokus hemat RAM)
             docker compose build --pull
 
-            # 2. Matikan yang lama, nyalakan yang baru
             docker compose down
             docker compose up -d
 
-            # 3. Kasih jeda 10 detik biar DB & Rails napas dulu sebelum migrasi
-            echo "Waiting for services to stabilize..."
-            sleep 10
-
-            # 4. Jalankan migrasi (pake -T biar ga interaktif)
-            docker compose exec -T web bin/rails db:prepare
-
-            echo "✅ Deployment success!"
+            echo "Deployment success!"
