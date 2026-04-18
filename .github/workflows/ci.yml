@@ -142,17 +142,20 @@ jobs:
           script: |
             set -e
 
-            APP_DIR="~/chatroom"
+            APP_DIR="$HOME/chatroom"
 
-            if [ ! -d "$APP_DIR" ]; then
-              git clone https://github.com/faidfadjri/realtime-chat.git $APP_DIR
+            if [ -d "$APP_DIR/.git" ]; then
+              cd "$APP_DIR"
+              git fetch origin master
+              git reset --hard origin/master
+            else
+              git clone https://github.com/faidfadjri/realtime-chat.git "$APP_DIR"
+              cd "$APP_DIR"
             fi
 
-            cd $APP_DIR
-
-            git pull origin master
+            echo "${{ secrets.ENV_FILE }}" > .env
 
             docker compose down
             docker compose up -d --build
 
-            echo "✅ Deployment success"
+            echo "Deployment success with full ENV_FILE"
